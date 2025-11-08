@@ -86,10 +86,10 @@ public class Swerve extends SubsystemBase {
         odometryUpdater =
             new Notifier(
                 () -> {
-                modules.frontLeft.periodic();
-                modules.frontRight.periodic();
-                modules.backLeft.periodic();
-                modules.backRight.periodic();
+                modules.frontLeft.updateLogs();
+                modules.frontRight.updateLogs();
+                modules.backLeft.updateLogs();
+                modules.backRight.updateLogs();
 
                 estimatedPosition =
                     odometry.updateWithTime(
@@ -121,6 +121,11 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    modules.frontLeft.periodic();
+    modules.frontRight.periodic();
+    modules.backLeft.periodic();
+    modules.backRight.periodic();
+
     gyroAngle = gyro.getRotation2d();
 
     measuredStates[0] = modules.frontLeft.getModuleState();
