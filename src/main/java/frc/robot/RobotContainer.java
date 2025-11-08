@@ -7,6 +7,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,6 +19,8 @@ import frc.robot.subsystems.Swerve;
 @Logged
 public class RobotContainer {
 
+  @NotLogged private final XboxController controller;
+
   private final Swerve swerve;
 
   private boolean isBlue;
@@ -25,6 +29,8 @@ public class RobotContainer {
 
   public RobotContainer(boolean isReal) {
 
+    controller = new XboxController(0);
+    
     swerve = new Swerve(isReal);
 
     autoChooser = new SendableChooser<>();

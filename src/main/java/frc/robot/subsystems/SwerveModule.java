@@ -145,6 +145,22 @@ public class SwerveModule {
     turnFeedforward =
         new SimpleMotorFeedforward(
             SwerveConstants.TURN_FEEDFORWARD.ks, SwerveConstants.TURN_FEEDFORWARD.kv);
+
+
+    turnSetpoint = Rotation2d.kZero;
+    driveSetpoint = MetersPerSecond.of(0);
+    
+    driveCurrent = Amps.of(driveMotor.getOutputCurrent());
+    turnCurrent = Amps.of(turnMotor.getOutputCurrent());
+
+    driveVoltage = Volts.of(driveMotor.getAppliedOutput() * driveMotor.getBusVoltage());
+    turnVoltage = Volts.of(turnMotor.getAppliedOutput() * turnMotor.getBusVoltage());
+
+    drivePosition = Meters.of(driveEncoder.getPosition());
+    turnPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offset.getRadians());
+
+    driveVelocity = MetersPerSecond.of(driveEncoder.getVelocity());
+    turnVelocity = RadiansPerSecond.of(turnEncoder.getVelocity());
   }
 
   public void setState(SwerveModuleState swerveModuleState) {
