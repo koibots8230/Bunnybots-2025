@@ -176,7 +176,7 @@ public class SwerveModule {
     turnSetpoint = swerveModuleState.angle;
   }
 
-  public void periodic() {
+  public void updateLogs() {
     driveCurrent = Amps.of(driveMotor.getOutputCurrent());
     turnCurrent = Amps.of(turnMotor.getOutputCurrent());
 
@@ -188,7 +188,9 @@ public class SwerveModule {
 
     driveVelocity = MetersPerSecond.of(driveEncoder.getVelocity());
     turnVelocity = RadiansPerSecond.of(turnEncoder.getVelocity());
+  }
 
+  public void periodic() {
     turnGoalState =
         new TrapezoidProfile.State(
             MathUtil.angleModulus(turnSetpoint.getRadians()) + offset.getRadians(), 0);
@@ -212,11 +214,11 @@ public class SwerveModule {
 
   public SwerveModuleState getModuleState() {
     return new SwerveModuleState(
-        driveEncoder.getVelocity(), Rotation2d.fromRadians(turnEncoder.getPosition()));
+        driveVelocity, turnPosition);
   }
 
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveEncoder.getPosition(), Rotation2d.fromRadians(turnEncoder.getPosition()));
+        drivePosition, turnPosition);
   }
 }

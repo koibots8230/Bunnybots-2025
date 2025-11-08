@@ -80,6 +80,11 @@ public class Swerve extends SubsystemBase {
         odometryUpdater =
             new Notifier(
                 () -> {
+                modules.frontLeft.updateLogs();
+                modules.frontRight.updateLogs();
+                modules.backLeft.updateLogs();
+                modules.backRight.updateLogs();
+
                 estimatedPosition =
                     odometry.updateWithTime(
                         Timer.getFPGATimestamp(),
@@ -110,7 +115,6 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     modules.frontLeft.periodic();
     modules.frontRight.periodic();
     modules.backLeft.periodic();
