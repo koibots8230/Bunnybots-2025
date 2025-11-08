@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -11,11 +12,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -62,6 +65,8 @@ public class Swerve extends SubsystemBase {
 
   private boolean isBlue;
 
+  private Translation2d autoStartingPosition;
+
   public Swerve(boolean isReal) {
 
     modules = new Modules();
@@ -85,7 +90,7 @@ public class Swerve extends SubsystemBase {
                         Timer.getFPGATimestamp(),
                         isBlue
                             ? gyro.getRotation2d()
-                            : gyro.getRotation2d().minus(Rotation2d.fromRadians(Math.PI)),
+                            : gyro.getRotation2d().minus(Rotation2d.kPi),
                         getModulePostitions());
                 });
         odometryUpdater.startPeriodic(0.005);
@@ -135,7 +140,7 @@ public class Swerve extends SubsystemBase {
 
     estimatedPosition =
         odometry.update(
-            isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)),
+            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi),
             this.getModulePostitions());
 
     modules.frontLeft.simulationPeriodic();
@@ -221,7 +226,28 @@ public class Swerve extends SubsystemBase {
     driveRobotRelative(speeds);
   }
 
+  // ===================== Auto Driving ===================== \\
+
+  private void followVector(LinearVelocity velocity, Rotation2d heading) {
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        heading.getSin() * velocity.in(MetersPerSecond),
+        heading.getCos() * velocity.in(MetersPerSecond),
+        0,
+        gyroAngle);
+  }
+
   // ===================== Commands ===================== \\
+
+  public Command autoDriveCommand(Distance distance, LinearVelocity velocity, Rotation2d heading) {
+    return Commands.sequence(
+        Commands.runOnce(() -> {autoStartingPosition = estimatedPosition.getTranslation();}),
+        Commands.race(
+            Commands.run(() -> this.followVector(velocity, heading), this),
+            Commands.waitUntil(() -> estimatedPosition.getTranslation().getDistance(autoStartingPosition) >= distance.in(Meters))
+        ),
+        Commands.runOnce(() -> this.followVector(MetersPerSecond.of(0), Rotation2d.kZero), this)
+    );
+  }
 
   public Command driveFieldRelativeCommand(
       DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega) {
