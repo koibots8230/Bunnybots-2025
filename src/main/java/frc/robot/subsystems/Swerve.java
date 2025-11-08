@@ -74,6 +74,7 @@ public class Swerve extends SubsystemBase {
     gyro = new Pigeon2(SwerveConstants.GYRO_ID);
 
     estimatedPosition = new Pose2d();
+    autoStartingPosition = new Translation2d();
     gyroAngle = gyro.getRotation2d();
     simHeading = new Rotation2d();
 
@@ -85,6 +86,11 @@ public class Swerve extends SubsystemBase {
         odometryUpdater =
             new Notifier(
                 () -> {
+                modules.frontLeft.periodic();
+                modules.frontRight.periodic();
+                modules.backLeft.periodic();
+                modules.backRight.periodic();
+
                 estimatedPosition =
                     odometry.updateWithTime(
                         Timer.getFPGATimestamp(),
@@ -115,12 +121,6 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    modules.frontLeft.periodic();
-    modules.frontRight.periodic();
-    modules.backLeft.periodic();
-    modules.backRight.periodic();
-
     gyroAngle = gyro.getRotation2d();
 
     measuredStates[0] = modules.frontLeft.getModuleState();
@@ -229,11 +229,14 @@ public class Swerve extends SubsystemBase {
   // ===================== Auto Driving ===================== \\
 
   private void followVector(LinearVelocity velocity, Rotation2d heading) {
+    heading = isBlue ? heading : heading.plus(Rotation2d.kPi);
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        heading.getSin() * velocity.in(MetersPerSecond),
         heading.getCos() * velocity.in(MetersPerSecond),
+        heading.getSin() * velocity.in(MetersPerSecond),
         0,
         gyroAngle);
+    driveRobotRelative(speeds);
   }
 
   // ===================== Commands ===================== \\
@@ -241,10 +244,12 @@ public class Swerve extends SubsystemBase {
   public Command autoDriveCommand(Distance distance, LinearVelocity velocity, Rotation2d heading) {
     return Commands.sequence(
         Commands.runOnce(() -> {autoStartingPosition = estimatedPosition.getTranslation();}),
+        Commands.print("AutoStartpos done"),
         Commands.race(
             Commands.run(() -> this.followVector(velocity, heading), this),
             Commands.waitUntil(() -> estimatedPosition.getTranslation().getDistance(autoStartingPosition) >= distance.in(Meters))
         ),
+        Commands.print("Loop done"),
         Commands.runOnce(() -> this.followVector(MetersPerSecond.of(0), Rotation2d.kZero), this)
     );
   }

@@ -212,11 +212,11 @@ public class SwerveModule {
 
   public SwerveModuleState getModuleState() {
     return new SwerveModuleState(
-        driveEncoder.getVelocity(), Rotation2d.fromRadians(turnEncoder.getPosition()));
+        driveVelocity, turnPosition);
   }
 
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveEncoder.getPosition(), Rotation2d.fromRadians(turnEncoder.getPosition()));
+        drivePosition, turnPosition);
   }
 }
