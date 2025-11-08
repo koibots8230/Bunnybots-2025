@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer robotContainer;
 
   public Robot() {
-    robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer(Robot.isReal());
 
     DataLogManager.start();
     Epilogue.bind(this);
@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    robotContainer.setAlliance();
+
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
@@ -55,6 +57,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    robotContainer.setAlliance();
+    
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
