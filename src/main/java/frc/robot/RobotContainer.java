@@ -25,7 +25,6 @@ public class RobotContainer {
 
     swerve = new Swerve(isReal);
 
-
     controller = new XboxController(0);
 
     configureBindings();
