@@ -117,6 +117,8 @@ public class SwerveModule {
         SwerveConstants.TURN_CONVERSION_FACTOR / 60);
     turnConfig.absoluteEncoder.inverted(true);
 
+    turnConfig.signals.absoluteEncoderPositionPeriodMs(4);
+
     driveConfig = new SparkFlexConfig();
 
     driveConfig.closedLoop.pidf(
@@ -131,6 +133,9 @@ public class SwerveModule {
 
     driveConfig.encoder.positionConversionFactor(SwerveConstants.DRIVE_CONVERSION_FACTOR);
     driveConfig.encoder.velocityConversionFactor(SwerveConstants.DRIVE_CONVERSION_FACTOR / 60.0);
+
+    driveConfig.signals.primaryEncoderPositionPeriodMs(4);
+    driveConfig.signals.primaryEncoderVelocityPeriodMs(4);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     driveMotor.configure(

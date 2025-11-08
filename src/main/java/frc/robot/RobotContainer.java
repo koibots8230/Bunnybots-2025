@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,6 +46,8 @@ public class RobotContainer {
 
   private void setupAutos() {
     autoChooser.setDefaultOption("Nothing", Commands.none());
+
+    autoChooser.addOption("Test", swerve.autoDriveCommand(Meters.of(2), MetersPerSecond.of(2), Rotation2d.kZero));
     
     SmartDashboard.putData(autoChooser);
   }
