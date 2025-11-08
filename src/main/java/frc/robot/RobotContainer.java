@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -13,13 +15,18 @@ import frc.robot.subsystems.Swerve;
 @Logged
 public class RobotContainer {
 
-  Swerve swerve;
+  @NotLogged private final XboxController controller;
 
-  boolean isBlue;
+  private final Swerve swerve;
+
+  private boolean isBlue;
 
   public RobotContainer(boolean isReal) {
 
     swerve = new Swerve(isReal);
+
+
+    controller = new XboxController(0);
 
     configureBindings();
   }
