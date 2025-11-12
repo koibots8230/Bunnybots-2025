@@ -22,7 +22,7 @@ import frc.robot.Constants;
 
 @Logged
 public class Shooter extends SubsystemBase {
-  
+
   private final SparkMax shooterMotor;
   private final SparkMaxConfig shooterMotorConfig;
   private final SparkClosedLoopController shooterMotorController;
@@ -54,6 +54,4 @@ public class Shooter extends SubsystemBase {
   public Command shootCommand(AngularVelocity shooterVelocity) {
     return Commands.runOnce(() -> shoot(shooterVelocity), this);
   }
-
-  
 }
