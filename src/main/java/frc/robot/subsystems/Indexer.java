@@ -59,7 +59,6 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean seePiece() {
-
     if (laserCAN.getMeasurement() != null) {
       return laserCAN.getMeasurement().distance_mm
           < IndexerConstants.MINIMUM_DISTANCE.in(Millimeters);
