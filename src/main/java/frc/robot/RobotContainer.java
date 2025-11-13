@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,8 +29,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     Trigger test = new Trigger(() -> controller.getAButton());
-    test.onTrue(shooter.shootWithRPMOf(1000));
-    test.onFalse(shooter.shootWithRPMOf(0));
+    test.onTrue(shooter.shootWithRPMOf(RPM.of(1000)));
+    test.onFalse(shooter.shootWithRPMOf(RPM.of(0)));
   }
 
   public Command getAutonomousCommand() {

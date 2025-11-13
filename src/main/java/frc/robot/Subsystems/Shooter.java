@@ -48,18 +48,13 @@ public class Shooter extends SubsystemBase {
     shooterCurrent = Amps.of(shooterMotor.getOutputCurrent());
   }
 
-  // private void shoot() {
-  // this.shoot(topSetpoint);
-  // }
   private void shoot(AngularVelocity shooterVelocity) {
     shooterMotorController.setReference(shooterVelocity.in(RPM), ControlType.kVelocity);
+    topSetpoint = shooterVelocity;
   }
 
-  public Command shootWithRPMOf(Integer commandAngularVelocity) {
-    System.out.println("Shooting with RPM of: " + commandAngularVelocity);
-    topSetpoint = RPM.of(commandAngularVelocity);
-    System.out.println("Top Setpoint set to: " + topSetpoint);
-    return Commands.runOnce(() -> shoot(topSetpoint), this);
+  public Command shootWithRPMOf(AngularVelocity velocity) {
+    return Commands.runOnce(() -> shoot(velocity), this);
   }
 
   @Override
