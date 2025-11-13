@@ -1,6 +1,29 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
+
 public class Constants {
 
   public class RobotConstants {}
+
+  public class IndexerConstants {
+
+    public static final AngularVelocity INTAKING_SPEED = RPM.of(500);
+
+    public static final double P = 1;
+
+    public static final double FF = 1;
+
+    public static final Distance MINIMUM_DISTANCE = Millimeters.of(0);
+
+    public static final Current CURRENT_LIMMIT = Amps.of(60);
+
+    public static final int LASER_CAN = 1;
+
+    public static final int MOTOR_PORT = 1;
+  }
 }
