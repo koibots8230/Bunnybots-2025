@@ -18,9 +18,9 @@ public class Constants {
 
     public static final double FF = 1;
 
-    public static final Current CURRENT_LIMMIT = Amps.of(60);
-
     public static final Distance MINIMUM_DISTANCE = Millimeters.of(0);
+
+    public static final Current CURRENT_LIMMIT = Amps.of(60);
 
     public static final int LASER_CAN = 1;
 
