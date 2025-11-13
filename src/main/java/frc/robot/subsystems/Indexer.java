@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import au.grapplerobotics.LaserCan;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -25,7 +27,7 @@ import frc.robot.Constants.IndexerConstants;
 @Logged
 public class Indexer extends SubsystemBase {
 
-  private final SparkMax motor;
+  @NotLogged private final SparkMax motor;
 
   @NotLogged private final LaserCan laserCAN;
 
@@ -49,27 +51,16 @@ public class Indexer extends SubsystemBase {
     laserCAN = new LaserCan(IndexerConstants.LASER_CAN);
 
     config = new SparkMaxConfig();
-    config.closedLoop.p(IndexerConstants.p);
-    config.closedLoop.p(IndexerConstants.p);
+    config.closedLoop.p(IndexerConstants.P);
+    config.closedLoop.velocityFF(IndexerConstants.FF);
     config.inverted(false);
+    config.smartCurrentLimit((int) IndexerConstants.CURRENT_LIMMIT.in(Amps));
+
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     closedLoopController = motor.getClosedLoopController();
 
     setpoint = RPM.of(0);
-  }
-
-  public boolean seePiece() {
-    if (laserCAN.getMeasurement() != null) {
-      return laserCAN.getMeasurement().distance_mm
-          < IndexerConstants.MINIMUM_DISTANCE.in(Millimeters);
-    } else {
-      return false;
-    }
-  }
-
-  private void setSpeed(AngularVelocity speed) {
-    closedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
-    setpoint = speed;
   }
 
   @Override
@@ -85,6 +76,20 @@ public class Indexer extends SubsystemBase {
 
   public void simulationPeriodic() {
     velocity = setpoint;
+  }
+
+  public boolean seePiece() {
+    if (laserCAN.getMeasurement() != null) {
+      return laserCAN.getMeasurement().distance_mm
+          < IndexerConstants.MINIMUM_DISTANCE.in(Millimeters);
+    } else {
+      return false;
+    }
+  }
+
+  private void setSpeed(AngularVelocity speed) {
+    closedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
+    setpoint = speed;
   }
 
   public Command setSpeedCommand(AngularVelocity speed) {

@@ -11,7 +11,6 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
 
@@ -32,10 +31,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    Trigger test = new Trigger(controller::getAButton);
-
-    test.onTrue(indexer.setSpeedCommand(RPM.of(1000)).repeatedly());
-    test.onFalse(indexer.setSpeedCommand(RPM.of(0)));
 
     indexer.setDefaultCommand(
         Commands.either(
