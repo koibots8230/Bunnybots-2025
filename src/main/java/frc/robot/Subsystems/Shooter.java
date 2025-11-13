@@ -29,6 +29,7 @@ public class Shooter extends SubsystemBase {
   private Voltage shooterVoltage;
   private AngularVelocity shooterVelocity;
   private Current shooterCurrent;
+  private AngularVelocity topSetpoint;
 
   public Shooter() {
     shooterMotor = new SparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
@@ -47,11 +48,22 @@ public class Shooter extends SubsystemBase {
     shooterCurrent = Amps.of(shooterMotor.getOutputCurrent());
   }
 
+  // private void shoot() {
+  // this.shoot(topSetpoint);
+  // }
   private void shoot(AngularVelocity shooterVelocity) {
     shooterMotorController.setReference(shooterVelocity.in(RPM), ControlType.kVelocity);
   }
 
-  public Command shootCommand(AngularVelocity shooterVelocity) {
-    return Commands.runOnce(() -> shoot(shooterVelocity), this);
+  public Command shootWithRPMOf(Integer commandAngularVelocity) {
+    System.out.println("Shooting with RPM of: " + commandAngularVelocity);
+    topSetpoint = RPM.of(commandAngularVelocity);
+    System.out.println("Top Setpoint set to: " + topSetpoint);
+    return Commands.runOnce(() -> shoot(topSetpoint), this);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    shooterVelocity = topSetpoint;
   }
 }
