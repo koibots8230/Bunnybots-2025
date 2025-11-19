@@ -13,16 +13,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Shooter;
 
 @Logged
 public class RobotContainer {
 
   @NotLogged private final XboxController controller;
+  private final Shooter shooter;
 
   private final Indexer indexer;
 
   public RobotContainer() {
-
+    shooter = new Shooter();
     controller = new XboxController(0);
 
     indexer = new Indexer();
@@ -38,6 +41,9 @@ public class RobotContainer {
                 indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
                 indexer::seePiece)
             .repeatedly());
+    Trigger test = new Trigger(() -> controller.getAButton());
+    test.onTrue(shooter.shootWithRPMOf(RPM.of(1000)));
+    test.onFalse(shooter.shootWithRPMOf(RPM.of(0)));
   }
 
   public Command getAutonomousCommand() {
