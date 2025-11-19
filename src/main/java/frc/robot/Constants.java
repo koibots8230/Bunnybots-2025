@@ -14,6 +14,8 @@ public class Constants {
 
     public static final AngularVelocity INTAKING_SPEED = RPM.of(500);
 
+    public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-500);
+
     public static final double P = 1;
 
     public static final double FF = 1;

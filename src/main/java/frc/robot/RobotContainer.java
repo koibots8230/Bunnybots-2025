@@ -11,7 +11,9 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.commands.IndexerCommands;
 import frc.robot.subsystems.Indexer;
 
 @Logged
@@ -31,6 +33,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+   Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis()>0.15);
+
+    reverseIndexer.onTrue(
+      IndexerCommands.reverseCommand(indexer));
 
     indexer.setDefaultCommand(
         Commands.either(
