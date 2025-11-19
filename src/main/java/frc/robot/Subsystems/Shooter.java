@@ -1,4 +1,4 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
@@ -18,7 +18,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 @Logged
 public class Shooter extends SubsystemBase {
@@ -32,10 +32,13 @@ public class Shooter extends SubsystemBase {
   private AngularVelocity topSetpoint;
 
   public Shooter() {
-    shooterMotor = new SparkMax(Constants.ShooterConstants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
+    shooterMotor = new SparkMax(ShooterConstants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
     shooterMotorConfig = new SparkMaxConfig();
-    shooterMotorConfig.closedLoop.p(Constants.ShooterConstants.SHOOTER_P);
-    shooterMotorConfig.closedLoop.velocityFF(Constants.ShooterConstants.SHOOTER_FF);
+    shooterMotorConfig.closedLoop.p(ShooterConstants.SHOOTER_PID.kp);
+    shooterMotorConfig.closedLoop.velocityFF(ShooterConstants.SHOOTER_FF.kv);
+
+    shooterMotorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
+
     shooterMotor.configure(
         shooterMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     shooterMotorController = shooterMotor.getClosedLoopController();
