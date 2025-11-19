@@ -23,13 +23,13 @@ public class Constants {
     public static final AngularAcceleration MAX_TURN_ACCELRATION =
         RadiansPerSecondPerSecond.of(30 * Math.PI);
 
-    public static final PIDGains TURN_PID = new PIDGains.Builder().kp(3).kd(0.0).build();
-    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.38).build();
+    public static final PIDGains TURN_PID = new PIDGains.Builder().kp(0).kd(0.0).build();
+    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.0).build();
 
     public static final FeedforwardGains TURN_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.50).build();
+        new FeedforwardGains.Builder().kv(0.0).build();
     public static final FeedforwardGains DRIVE_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.225).build();
+        new FeedforwardGains.Builder().kv(0.0).build();
 
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(
