@@ -33,10 +33,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-   Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis()>0.15);
+    Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
 
-    reverseIndexer.onTrue(
-      IndexerCommands.reverseCommand(indexer));
+    reverseIndexer.onTrue(IndexerCommands.reverseCommand(indexer));
 
     indexer.setDefaultCommand(
         Commands.either(
