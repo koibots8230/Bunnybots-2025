@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     robotContainer.setAlliance();
-    
+
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }

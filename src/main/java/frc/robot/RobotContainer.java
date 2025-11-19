@@ -11,17 +11,17 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.Swerve;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 
 @Logged
 public class RobotContainer {
@@ -39,11 +39,11 @@ public class RobotContainer {
 
   public RobotContainer(boolean isReal) {
     controller = new XboxController(0);
-    
+
     swerve = new Swerve(isReal);
     shooter = new Shooter();
     indexer = new Indexer();
-  
+
     autoChooser = new SendableChooser<>();
     setupAutos();
 
@@ -51,8 +51,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
-    swerve.setDefaultCommand(swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX);
+
+    swerve.setDefaultCommand(
+        swerve.driveFieldRelativeCommand(
+            controller::getLeftY, controller::getLeftX, controller::getRightX));
 
     indexer.setDefaultCommand(
         Commands.either(
@@ -68,8 +70,9 @@ public class RobotContainer {
   private void setupAutos() {
     autoChooser.setDefaultOption("Nothing", Commands.none());
 
-    autoChooser.addOption("Test", swerve.autoDriveCommand(Meters.of(2), MetersPerSecond.of(2), Rotation2d.kZero));
-    
+    autoChooser.addOption(
+        "Test", swerve.autoDriveCommand(Meters.of(2), MetersPerSecond.of(2), Rotation2d.kZero));
+
     SmartDashboard.putData(autoChooser);
   }
 

@@ -151,10 +151,9 @@ public class SwerveModule {
         new SimpleMotorFeedforward(
             SwerveConstants.TURN_FEEDFORWARD.ks, SwerveConstants.TURN_FEEDFORWARD.kv);
 
-
     turnSetpoint = Rotation2d.kZero;
     driveSetpoint = MetersPerSecond.of(0);
-    
+
     driveCurrent = Amps.of(driveMotor.getOutputCurrent());
     turnCurrent = Amps.of(turnMotor.getOutputCurrent());
 
@@ -218,12 +217,10 @@ public class SwerveModule {
   }
 
   public SwerveModuleState getModuleState() {
-    return new SwerveModuleState(
-        driveVelocity, turnPosition);
+    return new SwerveModuleState(driveVelocity, turnPosition);
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(
-        drivePosition, turnPosition);
+    return new SwerveModulePosition(drivePosition, turnPosition);
   }
 }

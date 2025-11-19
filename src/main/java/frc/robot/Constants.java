@@ -6,11 +6,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 import frc.lib.util.FeedforwardGains;
 import frc.lib.util.PIDGains;
 
@@ -97,7 +97,7 @@ public class Constants {
 
     public static final int MOTOR_PORT = 1;
   }
-  
+
   public class ShooterConstants {
     public static final PIDGains SHOOTER_PID = new PIDGains.Builder().kp(0).build();
     public static final FeedforwardGains SHOOTER_FF = new FeedforwardGains.Builder().kv(0).build();

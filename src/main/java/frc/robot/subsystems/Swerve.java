@@ -83,9 +83,9 @@ public class Swerve extends SubsystemBase {
             SwerveConstants.KINEMATICS, gyroAngle, this.getModulePostitions(), estimatedPosition);
 
     if (isReal) {
-        odometryUpdater =
-            new Notifier(
-                () -> {
+      odometryUpdater =
+          new Notifier(
+              () -> {
                 modules.frontLeft.updateLogs();
                 modules.frontRight.updateLogs();
                 modules.backLeft.updateLogs();
@@ -94,12 +94,10 @@ public class Swerve extends SubsystemBase {
                 estimatedPosition =
                     odometry.updateWithTime(
                         Timer.getFPGATimestamp(),
-                        isBlue
-                            ? gyro.getRotation2d()
-                            : gyro.getRotation2d().minus(Rotation2d.kPi),
+                        isBlue ? gyro.getRotation2d() : gyro.getRotation2d().minus(Rotation2d.kPi),
                         getModulePostitions());
-                });
-        odometryUpdater.startPeriodic(0.005);
+              });
+      odometryUpdater.startPeriodic(0.005);
     }
 
     setpointStates = new SwerveModuleState[4];
@@ -145,8 +143,7 @@ public class Swerve extends SubsystemBase {
 
     estimatedPosition =
         odometry.update(
-            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi),
-            this.getModulePostitions());
+            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), this.getModulePostitions());
 
     modules.frontLeft.simulationPeriodic();
     modules.frontRight.simulationPeriodic();
@@ -236,11 +233,12 @@ public class Swerve extends SubsystemBase {
   private void followVector(LinearVelocity velocity, Rotation2d heading) {
     heading = isBlue ? heading : heading.plus(Rotation2d.kPi);
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        heading.getCos() * velocity.in(MetersPerSecond),
-        heading.getSin() * velocity.in(MetersPerSecond),
-        0,
-        gyroAngle);
+    ChassisSpeeds speeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            heading.getCos() * velocity.in(MetersPerSecond),
+            heading.getSin() * velocity.in(MetersPerSecond),
+            0,
+            gyroAngle);
     driveRobotRelative(speeds);
   }
 
@@ -248,15 +246,19 @@ public class Swerve extends SubsystemBase {
 
   public Command autoDriveCommand(Distance distance, LinearVelocity velocity, Rotation2d heading) {
     return Commands.sequence(
-        Commands.runOnce(() -> {autoStartingPosition = estimatedPosition.getTranslation();}),
+        Commands.runOnce(
+            () -> {
+              autoStartingPosition = estimatedPosition.getTranslation();
+            }),
         Commands.print("AutoStartpos done"),
         Commands.race(
             Commands.run(() -> this.followVector(velocity, heading), this),
-            Commands.waitUntil(() -> estimatedPosition.getTranslation().getDistance(autoStartingPosition) >= distance.in(Meters))
-        ),
+            Commands.waitUntil(
+                () ->
+                    estimatedPosition.getTranslation().getDistance(autoStartingPosition)
+                        >= distance.in(Meters))),
         Commands.print("Loop done"),
-        Commands.runOnce(() -> this.followVector(MetersPerSecond.of(0), Rotation2d.kZero), this)
-    );
+        Commands.runOnce(() -> this.followVector(MetersPerSecond.of(0), Rotation2d.kZero), this));
   }
 
   public Command driveFieldRelativeCommand(
