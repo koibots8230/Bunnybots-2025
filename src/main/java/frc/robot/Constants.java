@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import frc.lib.util.FeedforwardGains;
+import frc.lib.util.PIDGains;
 
 public class Constants {
 
@@ -14,9 +16,9 @@ public class Constants {
 
     public static final AngularVelocity INTAKING_SPEED = RPM.of(500);
 
-    public static final double P = 1;
+    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
 
-    public static final double FF = 1;
+    public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0).build();
 
     public static final Distance MINIMUM_DISTANCE = Millimeters.of(0);
 

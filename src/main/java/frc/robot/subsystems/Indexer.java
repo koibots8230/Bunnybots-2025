@@ -51,8 +51,8 @@ public class Indexer extends SubsystemBase {
     laserCAN = new LaserCan(IndexerConstants.LASER_CAN);
 
     config = new SparkMaxConfig();
-    config.closedLoop.p(IndexerConstants.P);
-    config.closedLoop.velocityFF(IndexerConstants.FF);
+    config.closedLoop.p(IndexerConstants.PID.kp);
+    config.closedLoop.velocityFF(IndexerConstants.FEEDFORWARD.kv);
     config.inverted(false);
     config.smartCurrentLimit((int) IndexerConstants.CURRENT_LIMMIT.in(Amps));
 
