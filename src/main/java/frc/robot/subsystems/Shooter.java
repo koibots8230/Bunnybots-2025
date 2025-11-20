@@ -23,37 +23,37 @@ import frc.robot.Constants.ShooterConstants;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private final SparkMax shooterMotor;
-  private final SparkMaxConfig shooterMotorConfig;
-  private final SparkClosedLoopController shooterMotorController;
-  private Voltage shooterVoltage;
-  private AngularVelocity shooterVelocity;
-  private Current shooterCurrent;
-  private AngularVelocity topSetpoint;
+  private final SparkMax motor;
+  private final SparkMaxConfig motorConfig;
+  private final SparkClosedLoopController motorController;
+  private Voltage voltage;
+  private AngularVelocity velocity;
+  private Current current;
+  private AngularVelocity setpoint;
 
   public Shooter() {
-    shooterMotor = new SparkMax(ShooterConstants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
-    shooterMotorConfig = new SparkMaxConfig();
-    shooterMotorConfig.closedLoop.p(ShooterConstants.SHOOTER_PID.kp);
-    shooterMotorConfig.closedLoop.velocityFF(ShooterConstants.SHOOTER_FF.kv);
+    motor = new SparkMax(ShooterConstants.MOTOR_PORT, MotorType.kBrushless);
+    motorConfig = new SparkMaxConfig();
+    motorConfig.closedLoop.p(ShooterConstants.PID.kp);
+    motorConfig.closedLoop.velocityFF(ShooterConstants.FEEDFORWARD.kv);
 
-    shooterMotorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
+    motorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
 
-    shooterMotor.configure(
-        shooterMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    shooterMotorController = shooterMotor.getClosedLoopController();
+    motor.configure(
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motorController = motor.getClosedLoopController();
   }
 
   @Override
   public void periodic() {
-    shooterVoltage = Volts.of(shooterMotor.getAppliedOutput() * shooterMotor.getBusVoltage());
-    shooterVelocity = RPM.of(shooterMotor.getEncoder().getVelocity());
-    shooterCurrent = Amps.of(shooterMotor.getOutputCurrent());
+    voltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
+    velocity = RPM.of(motor.getEncoder().getVelocity());
+    current = Amps.of(motor.getOutputCurrent());
   }
 
-  private void shoot(AngularVelocity shooterVelocity) {
-    shooterMotorController.setReference(shooterVelocity.in(RPM), ControlType.kVelocity);
-    topSetpoint = shooterVelocity;
+  private void shoot(AngularVelocity velocity) {
+    motorController.setReference(velocity.in(RPM), ControlType.kVelocity);
+    setpoint = velocity;
   }
 
   public Command shootWithRPMOf(AngularVelocity velocity) {
@@ -62,6 +62,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    shooterVelocity = topSetpoint;
+    velocity = setpoint;
   }
 }

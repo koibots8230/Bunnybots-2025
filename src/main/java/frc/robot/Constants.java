@@ -93,17 +93,17 @@ public class Constants {
 
     public static final Current CURRENT_LIMMIT = Amps.of(60);
 
-    public static final int LASER_CAN = 1;
+    public static final int LASER_CAN = 21;
 
-    public static final int MOTOR_PORT = 1;
+    public static final int MOTOR_PORT = 10;
   }
 
   public class ShooterConstants {
-    public static final PIDGains SHOOTER_PID = new PIDGains.Builder().kp(0).build();
-    public static final FeedforwardGains SHOOTER_FF = new FeedforwardGains.Builder().kv(0).build();
+    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
+    public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0).build();
 
     public static final Current CURRENT_LIMIT = Amps.of(60);
 
-    public static final int SHOOTER_MOTOR_ID = 0;
+    public static final int MOTOR_PORT = 11;
   }
 }

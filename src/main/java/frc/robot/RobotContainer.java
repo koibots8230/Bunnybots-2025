@@ -51,7 +51,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     swerve.setDefaultCommand(
         swerve.driveFieldRelativeCommand(
             controller::getLeftY, controller::getLeftX, controller::getRightX));
@@ -62,6 +61,7 @@ public class RobotContainer {
                 indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
                 indexer::seePiece)
             .repeatedly());
+
     Trigger test = new Trigger(() -> controller.getAButton());
     test.onTrue(shooter.shootWithRPMOf(RPM.of(1000)));
     test.onFalse(shooter.shootWithRPMOf(RPM.of(0)));
