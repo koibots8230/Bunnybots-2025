@@ -50,13 +50,13 @@ public class Shooter extends SubsystemBase {
     current = Amps.of(motor.getOutputCurrent());
   }
 
-  private void shoot(AngularVelocity velocity) {
+  private void setVelocity(AngularVelocity velocity) {
     motorController.setReference(velocity.in(RPM), ControlType.kVelocity);
     setpoint = velocity;
   }
 
-  public Command shootWithRPMOf(AngularVelocity velocity) {
-    return Commands.runOnce(() -> shoot(velocity), this);
+  public Command setVelocityCommand(AngularVelocity velocity) {
+    return Commands.runOnce(() -> setVelocity(velocity), this);
   }
 
   @Override

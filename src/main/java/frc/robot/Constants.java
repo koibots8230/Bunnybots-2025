@@ -85,10 +85,11 @@ public class Constants {
 
     public static final AngularVelocity INTAKING_SPEED = RPM.of(500);
 
+    public static final AngularVelocity SHOOT_SPEED = RPM.of(1500);
+
     public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-500);
 
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
-
     public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0).build();
 
     public static final Distance MINIMUM_DISTANCE = Millimeters.of(0);
@@ -101,6 +102,11 @@ public class Constants {
   }
 
   public class ShooterConstants {
+    public static final AngularVelocity HIGH_GOAL_SPEED = RPM.of(3000);
+    public static final AngularVelocity LOW_GOAL_SPEED = RPM.of(500);
+
+    public static final AngularVelocity REVERSE_SPEED = RPM.of(-500);
+
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
     public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0).build();
 
