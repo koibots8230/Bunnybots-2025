@@ -90,7 +90,8 @@ public class Constants {
     public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-500);
 
     public static final PIDGains PID = new PIDGains.Builder().kp(0.00008).build();
-    public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0.0003).build();
+    public static final FeedforwardGains FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.0003).build();
 
     public static final Distance MINIMUM_DISTANCE = Millimeters.of(90);
 
@@ -108,7 +109,8 @@ public class Constants {
     public static final AngularVelocity REVERSE_SPEED = RPM.of(-500);
 
     public static final PIDGains PID = new PIDGains.Builder().kp(0.0015).build();
-    public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0.000171).build();
+    public static final FeedforwardGains FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.000171).build();
 
     public static final Current CURRENT_LIMIT = Amps.of(60);
 

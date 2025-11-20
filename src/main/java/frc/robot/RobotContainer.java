@@ -6,7 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -54,7 +53,7 @@ public class RobotContainer {
     swerve.setDefaultCommand(
         swerve.driveFieldRelativeCommand(
             controller::getLeftY, controller::getLeftX, controller::getRightX));
-    
+
     indexer.setDefaultCommand(ScoringCommands.intake(indexer));
 
     Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
