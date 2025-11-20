@@ -63,6 +63,7 @@ public class SwerveModule {
   private final Rotation2d offset;
 
   private Rotation2d turnSetpoint;
+  private AngularVelocity turnSetpointVel;
   private LinearVelocity driveSetpoint;
 
   private Distance drivePosition;

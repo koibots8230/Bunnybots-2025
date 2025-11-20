@@ -53,7 +53,7 @@ public class Indexer extends SubsystemBase {
     config = new SparkMaxConfig();
     config.closedLoop.p(IndexerConstants.PID.kp);
     config.closedLoop.velocityFF(IndexerConstants.FEEDFORWARD.kv);
-    config.inverted(false);
+    config.inverted(true);
     config.smartCurrentLimit((int) IndexerConstants.CURRENT_LIMMIT.in(Amps));
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -65,7 +65,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    current = Amps.of(motor.get());
+    current = Amps.of(motor.getOutputCurrent());
     voltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
     velocity = RPM.of(motor.getEncoder().getVelocity());
 
@@ -94,10 +94,5 @@ public class Indexer extends SubsystemBase {
 
   public Command setSpeedCommand(AngularVelocity speed) {
     return Commands.runOnce(() -> setSpeed(speed), this);
-  }
-
-  public Command setVelocityCommand(AngularVelocity reverseIntakingSpeed) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setVelocityCommand'");
   }
 }
