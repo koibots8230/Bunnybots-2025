@@ -85,6 +85,8 @@ public class Constants {
 
     public static final AngularVelocity INTAKING_SPEED = RPM.of(500);
 
+    public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-500);
+
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
 
     public static final FeedforwardGains FEEDFORWARD = new FeedforwardGains.Builder().kv(0).build();

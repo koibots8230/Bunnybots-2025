@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.commands.IndexerCommands;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
@@ -54,6 +55,10 @@ public class RobotContainer {
     swerve.setDefaultCommand(
         swerve.driveFieldRelativeCommand(
             controller::getLeftY, controller::getLeftX, controller::getRightX));
+
+    Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
+
+    reverseIndexer.onTrue(IndexerCommands.reverseCommand(indexer));
 
     indexer.setDefaultCommand(
         Commands.either(
