@@ -96,8 +96,8 @@ public class Indexer extends SubsystemBase {
     return Commands.runOnce(() -> setSpeed(speed), this);
   }
 
-  public Command[] setVelocityCommand(AngularVelocity reverseIntakingSpeed) {
+public Command setVelocityCommand(AngularVelocity reverseIntakingSpeed) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'setVelocityCommand'");
-  }
+}
 }
