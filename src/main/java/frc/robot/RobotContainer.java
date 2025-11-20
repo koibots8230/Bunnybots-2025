@@ -61,11 +61,11 @@ public class RobotContainer {
     reverseIndexer.onTrue(ScoringCommands.reverseCommand(indexer, shooter));
     reverseIndexer.onFalse(ScoringCommands.stop(shooter));
 
-    Trigger shootHigh = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
+    Trigger shootHigh = new Trigger(controller::getRightBumperButton);
     shootHigh.onTrue(ScoringCommands.shootHigh(indexer, shooter));
     shootHigh.onFalse(ScoringCommands.stop(shooter));
 
-    Trigger shootLow = new Trigger(controller::getRightBumperButton);
+    Trigger shootLow = new Trigger(controller::getLeftBumperButton);
     shootLow.onTrue(ScoringCommands.shootLow(indexer, shooter));
     shootLow.onFalse(ScoringCommands.stop(shooter));
   }
