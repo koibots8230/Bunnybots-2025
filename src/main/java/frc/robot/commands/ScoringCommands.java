@@ -13,29 +13,34 @@ public class ScoringCommands {
 
   public static Command reverseCommand(Indexer indexer, Shooter shooter) {
     return Commands.parallel(
-        indexer.setSpeedCommand(IndexerConstants.REVERSE_INTAKING_SPEED).repeatedly(),
+        indexer.setSpeedCommand(IndexerConstants.REVERSE_SPEED).repeatedly(),
         shooter.setVelocityCommand(ShooterConstants.REVERSE_SPEED));
   }
 
   public static Command intake(Indexer indexer) {
     return Commands.either(
+        Commands.either(
+            Commands.sequence(
+                indexer.setSpeedCommand(IndexerConstants.REVERSE_INTAKING_SPEED),
+                Commands.waitSeconds(.6),
+                indexer.setSpeedCommand(RPM.of(0))),
             indexer.setSpeedCommand(RPM.of(0)),
-            indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
-            indexer::seePiece)
-        .repeatedly();
+            indexer::isIntaking),
+        indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
+        indexer::seePiece).repeatedly();
   }
 
   public static Command shootHigh(Indexer indexer, Shooter shooter) {
     return Commands.sequence(
         shooter.setVelocityCommand(ShooterConstants.HIGH_GOAL_SPEED),
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.75),
         indexer.setSpeedCommand(IndexerConstants.SHOOT_SPEED).repeatedly());
   }
 
   public static Command shootLow(Indexer indexer, Shooter shooter) {
     return Commands.sequence(
         shooter.setVelocityCommand(ShooterConstants.LOW_GOAL_SPEED),
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.75),
         indexer.setSpeedCommand(IndexerConstants.SHOOT_SPEED).repeatedly());
   }
 
