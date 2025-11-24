@@ -20,17 +20,17 @@ public class Constants {
     public static final LinearVelocity MAX_LINEAR_VELOCITY = MetersPerSecond.of(4.25);
     public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(2 * Math.PI);
 
-    public static final AngularVelocity MAX_TURN_VELOCITY = RadiansPerSecond.of(20 * Math.PI);
+    public static final AngularVelocity MAX_TURN_VELOCITY = RadiansPerSecond.of(60 * Math.PI);
     public static final AngularAcceleration MAX_TURN_ACCELRATION =
-        RadiansPerSecondPerSecond.of(30 * Math.PI);
+        RadiansPerSecondPerSecond.of(80 * Math.PI);
 
-    public static final PIDGains TURN_PID = new PIDGains.Builder().kp(0).kd(0.0).build();
-    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final PIDGains TURN_PID = new PIDGains.Builder().kp(0.4).kd(0).build();
+    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build();
 
     public static final FeedforwardGains TURN_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0).build();
+        new FeedforwardGains.Builder().kv(0.45).build();
     public static final FeedforwardGains DRIVE_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0).build();
+        new FeedforwardGains.Builder().kv(0.225).build();
 
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(

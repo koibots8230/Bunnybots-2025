@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -31,9 +32,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.RobotConstants;
@@ -56,24 +58,22 @@ public class SwerveModule {
   @NotLogged private final SimpleMotorFeedforward turnFeedforward;
 
   @NotLogged private final TrapezoidProfile turnProfile;
-
   private TrapezoidProfile.State turnGoalState;
   private TrapezoidProfile.State turnSetpointState;
 
   private final Rotation2d offset;
 
-  private Rotation2d turnSetpoint;
-  private AngularVelocity turnSetpointVel;
+  private Angle turnSetpoint;
   private LinearVelocity driveSetpoint;
 
-  private Distance drivePosition;
-  private Rotation2d turnPosition;
-  private LinearVelocity driveVelocity;
+  double drivePosition;
+  double turnPosition;
+  double driveVelocity;
   private AngularVelocity turnVelocity;
 
   private Voltage turnVoltage;
   private Voltage driveVoltage;
-  private Current turnCurrent;
+  private double turnCurrent;
   private Current driveCurrent;
 
   public SwerveModule(int driveID, int turnID) {
@@ -91,8 +91,7 @@ public class SwerveModule {
     turnProfile =
         new TrapezoidProfile(
             new TrapezoidProfile.Constraints(
-                SwerveConstants.MAX_TURN_VELOCITY.in(RadiansPerSecond),
-                SwerveConstants.MAX_TURN_ACCELRATION.in(RadiansPerSecondPerSecond)));
+                SwerveConstants.MAX_TURN_VELOCITY.in(RadiansPerSecond), SwerveConstants.MAX_TURN_ACCELRATION.in(RadiansPerSecondPerSecond)));
 
     turnGoalState = new TrapezoidProfile.State(0, 0);
     turnSetpointState = new TrapezoidProfile.State(0, 0);
@@ -118,8 +117,6 @@ public class SwerveModule {
         SwerveConstants.TURN_CONVERSION_FACTOR / 60);
     turnConfig.absoluteEncoder.inverted(true);
 
-    turnConfig.signals.absoluteEncoderPositionPeriodMs(4);
-
     driveConfig = new SparkFlexConfig();
 
     driveConfig.closedLoop.pidf(
@@ -135,9 +132,6 @@ public class SwerveModule {
     driveConfig.encoder.positionConversionFactor(SwerveConstants.DRIVE_CONVERSION_FACTOR);
     driveConfig.encoder.velocityConversionFactor(SwerveConstants.DRIVE_CONVERSION_FACTOR / 60.0);
 
-    driveConfig.signals.primaryEncoderPositionPeriodMs(4);
-    driveConfig.signals.primaryEncoderVelocityPeriodMs(4);
-
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     driveMotor.configure(
         driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -152,53 +146,50 @@ public class SwerveModule {
         new SimpleMotorFeedforward(
             SwerveConstants.TURN_FEEDFORWARD.ks, SwerveConstants.TURN_FEEDFORWARD.kv);
 
-    turnSetpoint = Rotation2d.kZero;
-    driveSetpoint = MetersPerSecond.of(0);
-
-    driveCurrent = Amps.of(driveMotor.getOutputCurrent());
-    turnCurrent = Amps.of(turnMotor.getOutputCurrent());
-
-    driveVoltage = Volts.of(driveMotor.getAppliedOutput() * driveMotor.getBusVoltage());
-    turnVoltage = Volts.of(turnMotor.getAppliedOutput() * turnMotor.getBusVoltage());
-
-    drivePosition = Meters.of(driveEncoder.getPosition());
-    turnPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offset.getRadians());
-
-    driveVelocity = MetersPerSecond.of(driveEncoder.getVelocity());
-    turnVelocity = RadiansPerSecond.of(turnEncoder.getVelocity());
+    turnSetpoint = Radians.of(0);
+    driveSetpoint = LinearVelocity.ofBaseUnits(0, Units.MetersPerSecond);
+    turnPosition = turnEncoder.getPosition();
+    drivePosition = driveEncoder.getPosition();
+    driveVelocity = driveEncoder.getVelocity();
+    turnVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
+    driveVoltage =
+        Voltage.ofBaseUnits(driveMotor.getBusVoltage() * driveMotor.getAppliedOutput(), Volts);
+    turnVoltage =
+        Voltage.ofBaseUnits(turnMotor.getBusVoltage() * turnMotor.getAppliedOutput(), Volts);
+    driveCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
+    turnCurrent = turnMotor.getOutputCurrent();
   }
 
   public void setState(SwerveModuleState swerveModuleState) {
-    swerveModuleState.optimize(
-        Rotation2d.fromRadians(MathUtil.angleModulus(turnPosition.getRadians())));
+    swerveModuleState.optimize(Rotation2d.fromRadians(MathUtil.angleModulus(turnPosition)));
 
-    swerveModuleState.speedMetersPerSecond *= swerveModuleState.angle.minus(turnPosition).getCos();
+    swerveModuleState.speedMetersPerSecond *=
+        Math.cos(swerveModuleState.angle.getRadians() - turnPosition);
 
     driveController.setReference(
         swerveModuleState.speedMetersPerSecond, SparkBase.ControlType.kVelocity);
 
     driveSetpoint = MetersPerSecond.of(swerveModuleState.speedMetersPerSecond);
-    turnSetpoint = swerveModuleState.angle;
+    turnSetpoint = Radians.of(swerveModuleState.angle.getRadians());
   }
 
   public void updateLogs() {
-    driveCurrent = Amps.of(driveMotor.getOutputCurrent());
-    turnCurrent = Amps.of(turnMotor.getOutputCurrent());
-
-    driveVoltage = Volts.of(driveMotor.getAppliedOutput() * driveMotor.getBusVoltage());
-    turnVoltage = Volts.of(turnMotor.getAppliedOutput() * turnMotor.getBusVoltage());
-
-    drivePosition = Meters.of(driveEncoder.getPosition());
-    turnPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offset.getRadians());
-
-    driveVelocity = MetersPerSecond.of(driveEncoder.getVelocity());
-    turnVelocity = RadiansPerSecond.of(turnEncoder.getVelocity());
+    driveCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Units.Amps);
+    turnCurrent = turnMotor.getOutputCurrent();
+    driveVoltage =
+        Voltage.ofBaseUnits(driveMotor.getBusVoltage() * driveMotor.getAppliedOutput(), Volts);
+    turnVoltage =
+        Voltage.ofBaseUnits(turnMotor.getBusVoltage() * turnMotor.getAppliedOutput(), Volts);
+    drivePosition = driveEncoder.getPosition();
+    turnPosition = turnEncoder.getPosition() - offset.getRadians();
+    driveVelocity = driveEncoder.getVelocity();
+    turnVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
   }
 
   public void periodic() {
     turnGoalState =
         new TrapezoidProfile.State(
-            MathUtil.angleModulus(turnSetpoint.getRadians()) + offset.getRadians(), 0);
+            MathUtil.angleModulus(turnSetpoint.in(Radians)) + offset.getRadians(), 0);
 
     turnSetpointState =
         turnProfile.calculate(
@@ -212,16 +203,17 @@ public class SwerveModule {
   }
 
   public void simulationPeriodic() {
-    drivePosition = drivePosition.plus(driveSetpoint.times(RobotConstants.ROBOT_CLOCK_SPEED));
-    turnPosition = turnSetpoint;
-    driveVelocity = driveSetpoint;
+    drivePosition =
+        drivePosition + driveSetpoint.times(RobotConstants.ROBOT_CLOCK_SPEED).in(Meters);
+    turnPosition = turnSetpoint.in(Radians);
+    driveVelocity = driveSetpoint.in(MetersPerSecond);
   }
 
   public SwerveModuleState getModuleState() {
-    return new SwerveModuleState(driveVelocity, turnPosition);
+    return new SwerveModuleState(driveVelocity, Rotation2d.fromRadians(turnPosition));
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(drivePosition, turnPosition);
+    return new SwerveModulePosition(drivePosition, Rotation2d.fromRadians(turnPosition));
   }
 }
