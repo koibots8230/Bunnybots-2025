@@ -237,8 +237,6 @@ public class Swerve extends SubsystemBase {
   // ===================== Auto Driving ===================== \\
 
   private void followVector(LinearVelocity velocity, Rotation2d heading) {
-    heading = isBlue ? heading : heading.plus(Rotation2d.kPi);
-
     ChassisSpeeds speeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             heading.getCos() * velocity.in(MetersPerSecond),

@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AutoConstants;
@@ -19,6 +21,7 @@ public class Autos {
         Commands.race(
             ScoringCommands.shootHigh(indexer, shooter),
             Commands.waitTime(AutoConstants.SHOOTING_TIME)),
+        indexer.setSpeedCommand(RPM.of(0)),
         ScoringCommands.stop(shooter));
   }
 
@@ -27,6 +30,7 @@ public class Autos {
         Commands.race(
             ScoringCommands.shootHigh(indexer, shooter),
             Commands.waitTime(AutoConstants.SHOOTING_TIME)),
+        indexer.setSpeedCommand(RPM.of(0)),
         ScoringCommands.stop(shooter),
         Autos.leave(swerve));
   }
@@ -36,6 +40,7 @@ public class Autos {
         Commands.race(
             ScoringCommands.shootLow(indexer, shooter),
             Commands.waitTime(AutoConstants.SHOOTING_TIME)),
+        indexer.setSpeedCommand(RPM.of(0)),
         ScoringCommands.stop(shooter));
   }
 
@@ -44,6 +49,7 @@ public class Autos {
         Commands.race(
             ScoringCommands.shootLow(indexer, shooter),
             Commands.waitTime(AutoConstants.SHOOTING_TIME)),
+        indexer.setSpeedCommand(RPM.of(0)),
         ScoringCommands.stop(shooter),
         Autos.leave(swerve));
   }

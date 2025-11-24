@@ -108,7 +108,7 @@ public class Constants {
 
     public static final AngularVelocity REVERSE_SPEED = RPM.of(-500);
 
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0015).build();
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.001).build();
     public static final FeedforwardGains FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.000171).build();
 
@@ -118,7 +118,7 @@ public class Constants {
   }
 
   public class AutoConstants {
-    public static final Distance LEAVE_DISTANCE = Meters.of(2);
+    public static final Distance LEAVE_DISTANCE = Meters.of(2.5);
 
     public static final LinearVelocity LEAVE_VELOCITY = MetersPerSecond.of(2);
 
