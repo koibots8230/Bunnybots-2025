@@ -4,12 +4,16 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.lang.invoke.VolatileCallSite;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -23,8 +27,8 @@ import frc.robot.Constants.ShooterConstants;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private final SparkMax motor;
-  private final SparkMaxConfig motorConfig;
+  private final SparkFlex motor;
+  private final SparkFlexConfig motorConfig;
   private final SparkClosedLoopController motorController;
   private Voltage voltage;
   private AngularVelocity velocity;
@@ -32,8 +36,8 @@ public class Shooter extends SubsystemBase {
   private AngularVelocity setpoint;
 
   public Shooter() {
-    motor = new SparkMax(ShooterConstants.MOTOR_PORT, MotorType.kBrushless);
-    motorConfig = new SparkMaxConfig();
+    motor = new SparkFlex(ShooterConstants.MOTOR_PORT, MotorType.kBrushless);
+    motorConfig = new SparkFlexConfig();
     motorConfig.closedLoop.p(ShooterConstants.PID.kp);
     motorConfig.closedLoop.velocityFF(ShooterConstants.FEEDFORWARD.kv);
 
@@ -41,6 +45,11 @@ public class Shooter extends SubsystemBase {
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     motorController = motor.getClosedLoopController();
+
+    voltage = Volts.of(0);
+    velocity = RPM.of(0);
+    current = Amps.of(0);
+    setpoint = RPM.of(0);
   }
 
   @Override

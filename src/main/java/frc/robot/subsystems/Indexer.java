@@ -61,6 +61,9 @@ public class Indexer extends SubsystemBase {
     closedLoopController = motor.getClosedLoopController();
 
     setpoint = RPM.of(0);
+    voltage = Volts.of(0);
+    velocity = RPM.of(0);
+    current = Amps.of(0);
   }
 
   @Override
