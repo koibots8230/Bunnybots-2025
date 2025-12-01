@@ -19,15 +19,16 @@ public class ScoringCommands {
 
   public static Command intake(Indexer indexer) {
     return Commands.either(
-        Commands.either(
-            Commands.sequence(
-                indexer.setSpeedCommand(IndexerConstants.REVERSE_INTAKING_SPEED),
-                Commands.waitSeconds(.6),
-                indexer.setSpeedCommand(RPM.of(0))),
-            indexer.setSpeedCommand(RPM.of(0)),
-            indexer::isIntaking),
-        indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
-        indexer::seePiece).repeatedly();
+            Commands.either(
+                Commands.sequence(
+                    indexer.setSpeedCommand(IndexerConstants.REVERSE_INTAKING_SPEED),
+                    Commands.waitSeconds(.6),
+                    indexer.setSpeedCommand(RPM.of(0))),
+                indexer.setSpeedCommand(RPM.of(0)),
+                indexer::isIntaking),
+            indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
+            indexer::seePiece)
+        .repeatedly();
   }
 
   public static Command shootHigh(Indexer indexer, Shooter shooter) {
