@@ -135,6 +135,11 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    modules.frontLeft.updateLogs();
+    modules.frontRight.updateLogs();
+    modules.backLeft.updateLogs();
+    modules.backRight.updateLogs();
+
     simHeading =
         simHeading.plus(
             new Rotation2d(
@@ -232,8 +237,6 @@ public class Swerve extends SubsystemBase {
   // ===================== Auto Driving ===================== \\
 
   private void followVector(LinearVelocity velocity, Rotation2d heading) {
-    heading = isBlue ? heading : heading.plus(Rotation2d.kPi);
-
     ChassisSpeeds speeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             heading.getCos() * velocity.in(MetersPerSecond),
@@ -251,14 +254,12 @@ public class Swerve extends SubsystemBase {
             () -> {
               autoStartingPosition = estimatedPosition.getTranslation();
             }),
-        Commands.print("AutoStartpos done"),
         Commands.race(
             Commands.run(() -> this.followVector(velocity, heading), this),
             Commands.waitUntil(
                 () ->
                     estimatedPosition.getTranslation().getDistance(autoStartingPosition)
                         >= distance.in(Meters))),
-        Commands.print("Loop done"),
         Commands.runOnce(() -> this.followVector(MetersPerSecond.of(0), Rotation2d.kZero), this));
   }
 

@@ -118,4 +118,14 @@ public class Constants {
 
     public static final int MOTOR_PORT = 11;
   }
+
+  public class AutoConstants {
+    public static final Distance LEAVE_DISTANCE = Meters.of(2.5);
+
+    public static final LinearVelocity LEAVE_VELOCITY = MetersPerSecond.of(2);
+
+    public static final Rotation2d LEAVE_HEADING = Rotation2d.kZero;
+
+    public static final Time SHOOTING_TIME = Seconds.of(7.5);
+  }
 }
