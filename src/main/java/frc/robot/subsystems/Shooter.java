@@ -39,6 +39,8 @@ public class Shooter extends SubsystemBase {
 
     motorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
 
+    motorConfig.inverted(true);
+
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     motorController = motor.getClosedLoopController();
 

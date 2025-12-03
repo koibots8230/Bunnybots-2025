@@ -83,17 +83,19 @@ public class Constants {
 
   public class IndexerConstants {
 
-    public static final AngularVelocity INTAKING_SPEED = RPM.of(750);
+    public static final AngularVelocity INTAKING_SPEED = RPM.of(300);
 
-    public static final AngularVelocity SHOOT_SPEED = RPM.of(1500);
+    public static final AngularVelocity SHOOT_SPEED = RPM.of(2500);
 
-    public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-500);
+    public static final AngularVelocity REVERSE_INTAKING_SPEED = RPM.of(-100);
+
+    public static final AngularVelocity REVERSE_SPEED = RPM.of(-600);
 
     public static final PIDGains PID = new PIDGains.Builder().kp(0.00008).build();
     public static final FeedforwardGains FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.0003).build();
 
-    public static final Distance MINIMUM_DISTANCE = Millimeters.of(90);
+    public static final Distance MINIMUM_DISTANCE = Millimeters.of(150);
 
     public static final Current CURRENT_LIMMIT = Amps.of(60);
 
@@ -103,16 +105,16 @@ public class Constants {
   }
 
   public class ShooterConstants {
-    public static final AngularVelocity HIGH_GOAL_SPEED = RPM.of(3000);
-    public static final AngularVelocity LOW_GOAL_SPEED = RPM.of(500);
+    public static final AngularVelocity HIGH_GOAL_SPEED = RPM.of(2100);
+    public static final AngularVelocity LOW_GOAL_SPEED = RPM.of(645);
 
     public static final AngularVelocity REVERSE_SPEED = RPM.of(-500);
 
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.001).build();
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.0016).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.000171).build();
+        new FeedforwardGains.Builder().kv(0.000185).build();
 
-    public static final Current CURRENT_LIMIT = Amps.of(60);
+    public static final Current CURRENT_LIMIT = Amps.of(80);
 
     public static final int MOTOR_PORT = 11;
   }

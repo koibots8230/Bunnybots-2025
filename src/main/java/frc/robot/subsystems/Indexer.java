@@ -90,6 +90,10 @@ public class Indexer extends SubsystemBase {
     }
   }
 
+  public boolean isIntaking() {
+    return IndexerConstants.INTAKING_SPEED == setpoint;
+  }
+
   private void setSpeed(AngularVelocity speed) {
     closedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
     setpoint = speed;

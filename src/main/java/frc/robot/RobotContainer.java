@@ -51,7 +51,7 @@ public class RobotContainer {
         swerve.driveFieldRelativeCommand(
             controller::getLeftY, controller::getLeftX, controller::getRightX));
 
-    // indexer.setDefaultCommand(ScoringCommands.intake(indexer));
+    indexer.setDefaultCommand(ScoringCommands.intake(indexer));
 
     Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     reverseIndexer.onTrue(ScoringCommands.reverseCommand(indexer, shooter));
