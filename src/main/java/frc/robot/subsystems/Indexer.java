@@ -53,7 +53,7 @@ public class Indexer extends SubsystemBase {
     config = new SparkMaxConfig();
     config.closedLoop.p(IndexerConstants.PID.kp);
     config.closedLoop.velocityFF(IndexerConstants.FEEDFORWARD.kv);
-    config.inverted(false);
+    config.inverted(true);
     config.smartCurrentLimit((int) IndexerConstants.CURRENT_LIMMIT.in(Amps));
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -61,11 +61,14 @@ public class Indexer extends SubsystemBase {
     closedLoopController = motor.getClosedLoopController();
 
     setpoint = RPM.of(0);
+    voltage = Volts.of(0);
+    velocity = RPM.of(0);
+    current = Amps.of(0);
   }
 
   @Override
   public void periodic() {
-    current = Amps.of(motor.get());
+    current = Amps.of(motor.getOutputCurrent());
     voltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
     velocity = RPM.of(motor.getEncoder().getVelocity());
 
@@ -85,6 +88,10 @@ public class Indexer extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public boolean isIntaking() {
+    return IndexerConstants.INTAKING_SPEED == setpoint;
   }
 
   private void setSpeed(AngularVelocity speed) {

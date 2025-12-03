@@ -8,9 +8,9 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -23,45 +23,51 @@ import frc.robot.Constants.ShooterConstants;
 @Logged
 public class Shooter extends SubsystemBase {
 
-  private final SparkMax shooterMotor;
-  private final SparkMaxConfig shooterMotorConfig;
-  private final SparkClosedLoopController shooterMotorController;
-  private Voltage shooterVoltage;
-  private AngularVelocity shooterVelocity;
-  private Current shooterCurrent;
-  private AngularVelocity topSetpoint;
+  private final SparkFlex motor;
+  private final SparkFlexConfig motorConfig;
+  private final SparkClosedLoopController motorController;
+  private Voltage voltage;
+  private AngularVelocity velocity;
+  private Current current;
+  private AngularVelocity setpoint;
 
   public Shooter() {
-    shooterMotor = new SparkMax(ShooterConstants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
-    shooterMotorConfig = new SparkMaxConfig();
-    shooterMotorConfig.closedLoop.p(ShooterConstants.SHOOTER_PID.kp);
-    shooterMotorConfig.closedLoop.velocityFF(ShooterConstants.SHOOTER_FF.kv);
+    motor = new SparkFlex(ShooterConstants.MOTOR_PORT, MotorType.kBrushless);
+    motorConfig = new SparkFlexConfig();
+    motorConfig.closedLoop.p(ShooterConstants.PID.kp);
+    motorConfig.closedLoop.velocityFF(ShooterConstants.FEEDFORWARD.kv);
 
-    shooterMotorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
+    motorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
 
-    shooterMotor.configure(
-        shooterMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    shooterMotorController = shooterMotor.getClosedLoopController();
+    motorConfig.inverted(true);
+
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motorController = motor.getClosedLoopController();
+
+    voltage = Volts.of(0);
+    velocity = RPM.of(0);
+    current = Amps.of(0);
+    setpoint = RPM.of(0);
   }
 
   @Override
   public void periodic() {
-    shooterVoltage = Volts.of(shooterMotor.getAppliedOutput() * shooterMotor.getBusVoltage());
-    shooterVelocity = RPM.of(shooterMotor.getEncoder().getVelocity());
-    shooterCurrent = Amps.of(shooterMotor.getOutputCurrent());
+    voltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
+    velocity = RPM.of(motor.getEncoder().getVelocity());
+    current = Amps.of(motor.getOutputCurrent());
   }
 
-  private void shoot(AngularVelocity shooterVelocity) {
-    shooterMotorController.setReference(shooterVelocity.in(RPM), ControlType.kVelocity);
-    topSetpoint = shooterVelocity;
+  private void setVelocity(AngularVelocity velocity) {
+    motorController.setReference(velocity.in(RPM), ControlType.kVelocity);
+    setpoint = velocity;
   }
 
-  public Command shootWithRPMOf(AngularVelocity velocity) {
-    return Commands.runOnce(() -> shoot(velocity), this);
+  public Command setVelocityCommand(AngularVelocity velocity) {
+    return Commands.runOnce(() -> setVelocity(velocity), this);
   }
 
   @Override
   public void simulationPeriodic() {
-    shooterVelocity = topSetpoint;
+    velocity = setpoint;
   }
 }

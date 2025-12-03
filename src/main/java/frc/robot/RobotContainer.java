@@ -6,7 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -18,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.IndexerConstants;
+import frc.robot.commands.ScoringCommands;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
@@ -51,20 +50,23 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     swerve.setDefaultCommand(
         swerve.driveFieldRelativeCommand(
             controller::getLeftY, controller::getLeftX, controller::getRightX));
 
-    indexer.setDefaultCommand(
-        Commands.either(
-                indexer.setSpeedCommand(RPM.of(0)),
-                indexer.setSpeedCommand(IndexerConstants.INTAKING_SPEED),
-                indexer::seePiece)
-            .repeatedly());
-    Trigger test = new Trigger(() -> controller.getAButton());
-    test.onTrue(shooter.shootWithRPMOf(RPM.of(1000)));
-    test.onFalse(shooter.shootWithRPMOf(RPM.of(0)));
+    indexer.setDefaultCommand(ScoringCommands.intake(indexer));
+
+    Trigger reverseIndexer = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
+    reverseIndexer.onTrue(ScoringCommands.reverseCommand(indexer, shooter));
+    reverseIndexer.onFalse(ScoringCommands.stop(shooter));
+
+    Trigger shootHigh = new Trigger(controller::getRightBumperButton);
+    shootHigh.onTrue(ScoringCommands.shootHigh(indexer, shooter));
+    shootHigh.onFalse(ScoringCommands.stop(shooter));
+
+    Trigger shootLow = new Trigger(controller::getLeftBumperButton);
+    shootLow.onTrue(ScoringCommands.shootLow(indexer, shooter));
+    shootLow.onFalse(ScoringCommands.stop(shooter));
   }
 
   private void setupAutos() {

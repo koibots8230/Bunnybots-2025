@@ -75,7 +75,7 @@ public class Swerve extends SubsystemBase {
 
     estimatedPosition = new Pose2d();
     autoStartingPosition = new Translation2d();
-    gyroAngle = gyro.getRotation2d();
+    gyroAngle = gyro.getRotation2d().plus(Rotation2d.k180deg);
     simHeading = new Rotation2d();
 
     odometry =
@@ -83,6 +83,7 @@ public class Swerve extends SubsystemBase {
             SwerveConstants.KINEMATICS, gyroAngle, this.getModulePostitions(), estimatedPosition);
 
     if (isReal) {
+      System.out.println("Isreal triggered!!!");
       odometryUpdater =
           new Notifier(
               () -> {
@@ -124,7 +125,7 @@ public class Swerve extends SubsystemBase {
     modules.backLeft.periodic();
     modules.backRight.periodic();
 
-    gyroAngle = gyro.getRotation2d();
+    gyroAngle = gyro.getRotation2d().plus(Rotation2d.k180deg);
 
     measuredStates[0] = modules.frontLeft.getModuleState();
     measuredStates[1] = modules.frontRight.getModuleState();
