@@ -50,9 +50,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // swerve.setDefaultCommand(
-    //     swerve.driveFieldRelativeCommand(
-    //         controller::getLeftY, controller::getLeftX, controller::getRightX));
+    swerve.setDefaultCommand(
+        swerve.driveFieldRelativeCommand(
+            controller::getLeftY, controller::getLeftX, controller::getRightX));
 
     indexer.setDefaultCommand(ScoringCommands.intake(indexer));
 

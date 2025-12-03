@@ -22,7 +22,7 @@ public class ScoringCommands {
             Commands.either(
                 Commands.sequence(
                     indexer.setSpeedCommand(IndexerConstants.REVERSE_INTAKING_SPEED),
-                    Commands.waitSeconds(.6),
+                    Commands.waitSeconds(0.6),
                     indexer.setSpeedCommand(RPM.of(0))),
                 indexer.setSpeedCommand(RPM.of(0)),
                 indexer::isIntaking),
@@ -34,14 +34,14 @@ public class ScoringCommands {
   public static Command shootHigh(Indexer indexer, Shooter shooter) {
     return Commands.sequence(
         shooter.setVelocityCommand(ShooterConstants.HIGH_GOAL_SPEED),
-        Commands.waitSeconds(0.75),
+        Commands.waitSeconds(1.2),
         indexer.setSpeedCommand(IndexerConstants.SHOOT_SPEED).repeatedly());
   }
 
   public static Command shootLow(Indexer indexer, Shooter shooter) {
     return Commands.sequence(
         shooter.setVelocityCommand(ShooterConstants.LOW_GOAL_SPEED),
-        Commands.waitSeconds(0.75),
+        Commands.waitSeconds(1),
         indexer.setSpeedCommand(IndexerConstants.SHOOT_SPEED).repeatedly());
   }
 
